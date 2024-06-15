@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import dbConnect from "./config/mongoDB.js";
 import routerMaster from "./routes/index.js";
+import { saveInactiveConversations } from "./controllers/conversations.js";
 
 const app = express();
 dotenv.config();
@@ -19,6 +20,9 @@ app.listen(port, () => {
 });
 
 dbConnect();
+
+// Ejecuta saveInactiveConversations cada 30 minutos
+setInterval(saveInactiveConversations, 30 * 60 * 1000);
 
 const router = express.Router();
 
