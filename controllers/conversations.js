@@ -1,5 +1,5 @@
 import { ConversationsModel } from "../models/index.js";
-import { saveConversation } from "../models/index.js";
+//import { saveConversation } from "../models/index.js";
 import handleHTTPError from "../utils/handleError.js";
 
 const getAllItems = async (req, res) => {
