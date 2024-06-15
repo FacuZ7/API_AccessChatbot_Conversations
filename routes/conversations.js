@@ -1,22 +1,29 @@
-import express from 'express'
-import {getAllItems,
-        getItemById,
-        createItem,
-        updateItem,
-        deleteItem
-        } from '../controllers/conversations.js'
+import express from "express";
+import {
+  getAllItems,
+  getItemById,
+  createItem,
+  updateItem,
+  deleteItem,
+  handleEndOfConversation,
+  saveInactiveConversations,
+} from "../controllers/conversations.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.get("/",getAllItems)
-router.get("/:id",getItemById)
+router.get("/", getAllItems);
+router.get("/:id", getItemById);
+router.post("/", createItem);
+router.put("/:id", updateItem);
+router.delete("/:id", deleteItem);
+router.post("/end-conversation", handleEndOfConversation);
 
-router.post("/",createItem)
+// Middleware de manejo de errores
+router.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Error en conversations.js!");
+});
 
-router.put("/:id",updateItem)
+setInterval(saveInactiveConversations, 30 * 60 * 1000);
 
-router.delete("/:id",deleteItem)
-
-
-
-export default router
+export default router;
