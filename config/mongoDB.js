@@ -1,22 +1,26 @@
 import mongoose from "mongoose";
 
 const dbConnect = async () => {
-    const DB_URI = process.env.DB_URI;
+  const DB_URI = process.env.DB_URI;
 
-    try {
-        await mongoose.connect(DB_URI)
-            
-        //     parece que esto esta deprecated, dejo comentado por las dudas.
-        //     , {
-        //     useNewUrlParser: true,
-        //     useUnifiedTopology: true,
-        // })
+  try {
+    await mongoose.connect(DB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
 
-        console.log('****** CONECTADO A MONGO ******')
-    } catch (err) {
-        console.log('****** ERROR EN CONEXIÓN A MONGO ******' + err.message)
-    }
+    console.log("****** CONECTADO A MONGO ******");
 
-}
+    mongoose.connection.on("disconnected", () => {
+      console.log("****** MONGO DESCONECTADO ******");
+    });
 
-export default dbConnect
+    mongoose.connection.on("reconnected", () => {
+      console.log("****** MONGO RECONECTADO ******");
+    });
+  } catch (err) {
+    console.log("****** ERROR EN CONEXIÓN A MONGO ******" + err.message);
+  }
+};
+
+export default dbConnect;
