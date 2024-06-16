@@ -16,7 +16,7 @@ const sessionSchema = new mongoose.Schema({
         required: true,
       },
 }, {
-      timestamps: true, // This will add `createdAt` and `updatedAt` fields
+      timestamps: true, // This adds `createdAt` and `updatedAt` fields
 }
 );
 

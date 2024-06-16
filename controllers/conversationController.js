@@ -1,4 +1,4 @@
-import { ConversationsModel } from "../models/index.js";
+import { ConversationsModel } from "../models/schemaIndex";
 import { saveConversation } from "../utils/saveConversations.js";
 import handleHTTPError from "../utils/handleError.js";
 
