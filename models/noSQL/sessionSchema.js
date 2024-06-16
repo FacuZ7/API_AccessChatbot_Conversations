@@ -10,7 +10,7 @@ const sessionSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
-    fecha: {
+    date: {
         type: Date,
         default: Date.now,
         required: true,

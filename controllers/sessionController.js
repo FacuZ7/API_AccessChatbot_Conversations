@@ -1,5 +1,5 @@
-import { SessionModel } from "../models/schemaIndex";
-import handleHTTPError from "../utils/handleError";
+import { SessionModel } from "../models/schemaIndex.js";
+import handleHTTPError from "../utils/handleError.js";
 
 const getSessionById = async (req, res) => {
     //GET /session/:id
@@ -13,7 +13,7 @@ const getSessionById = async (req, res) => {
 }
 
 const createSession = async (req, res) => {
-    //POST /session/:id
+    //POST /session
     try {
         const { body } = req;
         const data = await SessionModel.create(body);
