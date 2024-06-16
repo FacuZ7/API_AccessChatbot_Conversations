@@ -18,3 +18,5 @@ router.post("/clients", createItem);
 router.put("/clients/:id", updateItem);
 
 router.delete("/clients/:id", deleteItem);
+
+export default router;
