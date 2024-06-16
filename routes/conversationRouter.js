@@ -7,7 +7,7 @@ import {
   deleteItem,
   handleEndOfConversation,
   saveInactiveConversations,
-} from "../controllers/conversations.js";
+} from "../controllers/conversationController.js";
 
 const router = express.Router();
 

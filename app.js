@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import dbConnect from "./config/mongoDB.js";
-import routerMaster from "./routes/index.js";
+import routerMaster from "./routes/routerMaster.js";
 import { saveInactiveConversations } from "./controllers/conversations.js";
 
 const app = express();
@@ -25,11 +25,5 @@ dbConnect();
 setInterval(saveInactiveConversations, 30 * 60 * 1000);
 
 const router = express.Router();
-
-// router.get("/conversations", getAllItems);
-// router.get("/conversations/:id", getItemById);
-// router.post("/conversations", createItem);
-// router.put("/conversations/:id", updateItem);
-// router.delete("/conversations/:id", deleteItem);
 
 export default router;
