@@ -26,10 +26,4 @@ setInterval(saveInactiveConversations, 30 * 60 * 1000);
 
 const router = express.Router();
 
-// router.get("/conversations", getAllItems);
-// router.get("/conversations/:id", getItemById);
-// router.post("/conversations", createItem);
-// router.put("/conversations/:id", updateItem);
-// router.delete("/conversations/:id", deleteItem);
-
 export default router;
