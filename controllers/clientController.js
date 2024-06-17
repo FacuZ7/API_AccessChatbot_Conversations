@@ -1,5 +1,5 @@
-import handleHTTPError from "../utils/handleError";
-import { ClientModel } from "../models/schemaIndex";
+import handleHTTPError from "../utils/handleError.js";
+import { ClientModel } from "../models/schemaIndex.js";
 
 const getAllItems = async (req, res) => {
   try {
