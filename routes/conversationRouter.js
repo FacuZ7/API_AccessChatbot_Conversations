@@ -1,22 +1,16 @@
 import express from "express";
 import {
-  getAllItems,
-  getItemById,
-  createItem,
-  updateItem,
-  deleteItem,
-  handleEndOfConversation,
-  saveInactiveConversations,
+  getConversations, getConversationBySessionId, createConversation, saveMessages, saveFeedback, getMessages,
 } from "../controllers/conversationController.js";
 
 const router = express.Router();
 
-router.get("/", getAllItems);
-router.get("/:id", getItemById);
-router.post("/", createItem);
-router.put("/:id", updateItem);
-router.delete("/:id", deleteItem);
-router.post("/end-conversation", handleEndOfConversation);
+router.get("/", getConversations)
+router.get("/findBySessionId/:id", getConversationBySessionId)
+router.post("/", createConversation)
+router.patch("/:id/:sessionId/saveMessage", saveMessages)
+router.patch("/:id/:message_id/saveFeedback", saveFeedback)
+router.get("/:id/:sessionId/messages", getMessages)
 
 // Middleware de manejo de errores
 router.use((err, req, res, next) => {
