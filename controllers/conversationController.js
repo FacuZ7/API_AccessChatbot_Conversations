@@ -1,7 +1,7 @@
 import { ConversationsModel } from "../models/schemaIndex.js";
-import { saveConversation } from "../utils/saveConversations.js";
 import handleHTTPError from "../utils/handleError.js";
-import { AiMessage, HumanMessage } from "../models/messageSchema.js";
+import AiMessage from "../models/noSQL/aiMessageSchema.js";
+import HumanMessage from "../models/noSQL/humanMessageSchema.js";
 
 const getConversations = async (req, res) => {
   const page = parseInt(req.query.page) || 1;

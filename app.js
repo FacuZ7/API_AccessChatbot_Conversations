@@ -3,7 +3,6 @@ import express from "express";
 import cors from "cors";
 import dbConnect from "./config/mongoDB.js";
 import routerMaster from "./routes/routerMaster.js";
-import { saveInactiveConversations } from "./controllers/conversationController.js";
 
 const app = express();
 dotenv.config();

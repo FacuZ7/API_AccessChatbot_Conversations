@@ -5,7 +5,6 @@ import {
   createSession,
   updateSession,
   updateActivity,
-  getAllSessions,
 } from "../controllers/sessionController.js";
 
 const router = express.Router();
