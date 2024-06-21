@@ -1,25 +1,18 @@
 import mongoose from "mongoose";
 
-const sessionSchema = new mongoose.Schema({
-    sessionId: {
-        type: String,
-        unique: true,
-        required: true,
-      },
-    chatId: {
-        type: String,
-        required: true,
-      },
-    date: {
-        type: Date,
-        default: Date.now,
-        required: true,
-      },
-}, {
-      timestamps: true, // This adds `createdAt` and `updatedAt` fields
-}
-);
+const SessionSchema = new mongoose.Schema({
+  chat_id: {
+    type: String,
+    required: true,
+  },
+  last_active: {
+    type: String,
+    required: true,
+  },
+  session_id: {
+    type: String,
+    required: true,
+  },
+});
 
-const Session = mongoose.model("Session", sessionSchema);
-
-export default Session;
+export default mongoose.model("Session", SessionSchema);
