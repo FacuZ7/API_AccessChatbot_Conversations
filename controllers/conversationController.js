@@ -107,9 +107,7 @@ const saveMessages = async (req, res) => {
       res.json(conversation);
     }
   } catch (err) {
-    res.json({
-      message: err.message,
-    });
+    handleHTTPError(res, "SAVE_MESSAGE_ERROR");
   }
 };
 
@@ -140,18 +138,48 @@ const saveFeedback = async (req, res) => {
       res.json(savedConversation);
     }
   } catch (err) {
-    res.json({
-      message: err.message,
+    handleHTTPError(res, "SAVE_FEEDBACK_ERROR");
+  }
+};
+
+const getMessages = async (req, res) => {
+  const DEFAULT = 8;
+
+  // Para buscar el chat
+  const chatId = req.params.id;
+  const sessionId = req.params.sessionId;
+
+  // Trae la cantidad de mensajes solicitadas en el query o sino los últimos 8
+  const limit = parseInt(req.query.limit) || DEFAULT;
+
+  try {
+    const conversation = await ConversationsModel.findOne({
+      chat_id: chatId,
+      session_id: sessionId,
     });
+
+    if (conversation != null) {
+      if (conversation.messages && conversation.messages.length > 0) {
+        const messages = conversation.messages;
+        const index = Math.max(messages.length - limit, 0);
+        const lastMessages = messages.slice(index);
+
+        res.json(lastMessages);
+      } else {
+        res.json([]);
+      }
+    }
+  } catch (err) {
+    handleHTTPError(res, "GET_MESSAGES_ERROR");
   }
 };
 
 export {
-  getAllItems,
-  getItemById,
-  createItem,
-  updateItem,
+  getConversations,
+  getConversationBySessionId,
+  createConversation,
   deleteItem,
-  handleEndOfConversation,
-  saveInactiveConversations,
+  saveMessages,
+  saveFeedback,
+  getMessages,
 };
