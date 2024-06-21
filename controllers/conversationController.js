@@ -1,6 +1,7 @@
 import { ConversationsModel } from "../models/schemaIndex.js";
 import { saveConversation } from "../utils/saveConversations.js";
 import handleHTTPError from "../utils/handleError.js";
+import { AiMessage, HumanMessage } from "../models/messageSchema.js";
 
 const getConversations = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -8,7 +9,9 @@ const getConversations = async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const conversations = await Conversation.find().skip(offset).limit(limit);
+    const conversations = await ConversationsModel.find()
+      .skip(offset)
+      .limit(limit);
 
     res.json(conversations);
   } catch (error) {
@@ -20,7 +23,9 @@ const getConversationBySessionId = async (req, res) => {
   const sessionId = req.params.id;
 
   try {
-    const conversation = await Conversation.findOne({ session_id: sessionId });
+    const conversation = await ConversationsModel.findOne({
+      session_id: sessionId,
+    });
     res.json(conversation);
     res.send({ data });
   } catch (error) {
@@ -33,7 +38,7 @@ const createConversation = async (req, res) => {
   const userId = req.body.user_id;
   const sessionId = req.body.session_id;
 
-  const conversation = new Conversation({
+  const conversation = new ConversationsModel({
     chat_id: chatId,
     user_id: userId,
     session_id: sessionId,
@@ -49,20 +54,6 @@ const createConversation = async (req, res) => {
   }
 };
 
-const updateItem = async (req, res) => {
-  //PUT: Id
-  try {
-    const { id } = req.params;
-    const { body } = req;
-    const data = await ConversationsModel.findByIdAndUpdate(id, body, {
-      new: true,
-    });
-    res.send({ data });
-  } catch (error) {
-    handleHTTPError(res, "UPDATE_ITEM_ERROR"); //por default devuelve codigo 403
-  }
-};
-
 const deleteItem = async (req, res) => {
   //DELETE: Id
   try {
@@ -74,31 +65,84 @@ const deleteItem = async (req, res) => {
   }
 };
 
-const handleEndOfConversation = async (req, res) => {
-  const { user, messages } = req.body;
+const saveMessages = async (req, res) => {
+  // Para buscar el chat
+  const chatId = req.params.id;
+  const sessionId = req.params.sessionId;
 
-  // Save the conversation
-  await saveConversation(user, messages);
+  // Para crear el nuevo tupo de mensaje
+  const role = req.body.role;
+  const messageId = req.body.message_id;
+  const content = req.body.content;
+  const date = req.body.date;
 
-  // Send a response
-  res.json({ message: "Conversation saved successfully" });
+  let message;
+
+  try {
+    const conversation = await ConversationsModel.findOne({
+      chat_id: chatId,
+      session_id: sessionId,
+    });
+
+    if (conversation !== null) {
+      if (role === "human") {
+        message = new HumanMessage({
+          role: role,
+          message_id: messageId,
+          content: content,
+          date: date,
+        });
+      } else if (role === "ai") {
+        message = new AiMessage({
+          role: role,
+          message_id: messageId,
+          content: content,
+          date: date,
+          feedback: "None",
+        });
+      }
+
+      conversation.messages.push(message);
+      await conversation.save();
+      res.json(conversation);
+    }
+  } catch (err) {
+    res.json({
+      message: err.message,
+    });
+  }
 };
 
-const addMessage = async (user, message) => {
-  const conversation = await ConversationsModel.findOne({ user });
-  conversation.messages.push(message);
-  conversation.lastActivity = Date.now();
-  await conversation.save();
-};
+const saveFeedback = async (req, res) => {
+  // Para buscar el chat
+  const chatId = req.params.id;
+  const messageId = req.params.message_id;
 
-const saveInactiveConversations = async () => {
-  const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
-  const conversations = await ConversationsModel.find({
-    lastActivity: { $lt: thirtyMinutesAgo },
-  });
+  // Para obtener el feedback
+  const feedback = req.body.feedback;
 
-  for (const conversation of conversations) {
-    await saveConversation(conversation.user, conversation.messages);
+  try {
+    const conversation = await ConversationsModel.findOne({
+      chat_id: chatId,
+      "messages.message_id": messageId,
+    });
+
+    if (conversation != null) {
+      let message = conversation.messages.find(
+        (message) => message.message_id === messageId
+      );
+
+      message.feedback = feedback;
+
+      conversation.markModified("messages");
+
+      const savedConversation = await conversation.save();
+      res.json(savedConversation);
+    }
+  } catch (err) {
+    res.json({
+      message: err.message,
+    });
   }
 };
 
