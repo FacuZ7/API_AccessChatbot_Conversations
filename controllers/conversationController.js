@@ -2,33 +2,48 @@ import { ConversationsModel } from "../models/schemaIndex.js";
 import { saveConversation } from "../utils/saveConversations.js";
 import handleHTTPError from "../utils/handleError.js";
 
-const getAllItems = async (req, res) => {
-  //GET
+const getConversations = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 100;
+  const offset = (page - 1) * limit;
+
   try {
-    const data = await ConversationsModel.find({});
-    res.send({ data });
+    const conversations = await Conversation.find().skip(offset).limit(limit);
+
+    res.json(conversations);
   } catch (error) {
     handleHTTPError(res, "GET_ALL_ITEMS_ERROR"); //por default devuelve codigo 403
   }
 };
 
-const getItemById = async (req, res) => {
-  //GET:id
+const getConversationBySessionId = async (req, res) => {
+  const sessionId = req.params.id;
+
   try {
-    const { id } = req.params;
-    const data = await ConversationsModel.findById(id);
+    const conversation = await Conversation.findOne({ session_id: sessionId });
+    res.json(conversation);
     res.send({ data });
   } catch (error) {
     handleHTTPError(res, "GET_ITEM_BY_ID_ERROR"); //por default devuelve codigo 403
   }
 };
 
-const createItem = async (req, res) => {
-  //POST
+const createConversation = async (req, res) => {
+  const chatId = req.body.chat_id;
+  const userId = req.body.user_id;
+  const sessionId = req.body.session_id;
+
+  const conversation = new Conversation({
+    chat_id: chatId,
+    user_id: userId,
+    session_id: sessionId,
+    status: "open",
+    messages: [],
+  });
+
   try {
-    const { body } = req;
-    const data = await ConversationsModel.create(body);
-    res.send({ data });
+    const newConversation = await conversation.save();
+    res.json(newConversation);
   } catch (error) {
     handleHTTPError(res, "CREATE_ITEM_ERROR"); //por default devuelve codigo 403
   }
