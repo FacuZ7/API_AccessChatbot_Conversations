@@ -8,12 +8,12 @@ import clientRouter from './clientRouter.js';
 const routerMaster = Router()  
 
 routerMaster.use('/conversations', conversationsRoutes);
-routerMaster.use('/create-vector', vectorRouter);
+routerMaster.use('/vectors', vectorRouter);
 routerMaster.use('/session', sessionRoutes);
 routerMaster.use('/clients', clientRouter);
 
 routerMaster.use('/', (req, res)=>{
-    res.json('use the following paths: /conversations, /session, /clients')
+    res.json('use the following paths: /conversations, /session, /clients, /vectors')
 });
 
 export default routerMaster

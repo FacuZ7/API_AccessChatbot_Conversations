@@ -1,8 +1,13 @@
 import express from "express";
-import { createVector } from "../controllers/vectorController.js";
+import {
+    createVector,
+    getVector
+ } from "../controllers/vectorController.js";
 
 const router = express.Router();
 
+
+router.get("/", getVector);
 router.post("/", createVector);
 
 // Middleware de manejo de errores
