@@ -1,5 +1,5 @@
 import express from "express";
-import { createVector } from "../controllers/vectorController";
+import { createVector } from "../controllers/vectorController.js";
 
 const router = express.Router();
 

@@ -1,7 +1,7 @@
 import { VectorSchema } from "../models/schemaIndex.js";
 import handleHTTPError from "../utils/handleError.js";
 
-export const createVector = async (req, res) => {
+const createVector = async (req, res) => {
     const vectorId = req.body.vector_id;
     const fileName = req.body.filename;
   
@@ -18,3 +18,5 @@ export const createVector = async (req, res) => {
       handleHTTPError(res, "CREATE_ITEM_ERROR"); //por default devuelve codigo 403
     }
 };
+
+export { createVector };
