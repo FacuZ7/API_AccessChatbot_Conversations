@@ -101,8 +101,8 @@ const saveMessages = async (req, res) => {
           feedback: "None",
         });
       }
-
-      conversation.messages.push(message);
+      
+      conversation.messages.addToSet(message)
       await conversation.save();
       res.json(conversation);
     }
@@ -136,7 +136,9 @@ const saveFeedback = async (req, res) => {
       }
     )
 
-    res.json(conversation)
+    const savedConversation = await conversation.save()
+    
+    res.json(savedConversation)
     
   } catch (err) {
     handleHTTPError(res, "SAVE_FEEDBACK_ERROR");
