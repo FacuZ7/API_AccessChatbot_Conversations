@@ -120,23 +120,24 @@ const saveFeedback = async (req, res) => {
   const feedback = req.body.feedback;
 
   try {
-    const conversation = await ConversationsModel.findOne({
-      chat_id: chatId,
-      "messages.message_id": messageId,
-    });
+    const conversation = await ConversationsModel.findOneAndUpdate(
+      {
+        chat_id: chatId,
+        "messages.message_id": messageId
+      },
+      {
+        $set: {
+          "messages.$.feedback": feedback
+        }
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    )
 
-    if (conversation != null) {
-      let message = conversation.messages.find(
-        (message) => message.message_id === messageId
-      );
-
-      message.feedback = feedback;
-
-      conversation.markModified("messages");
-
-      const savedConversation = await conversation.save();
-      res.json(savedConversation);
-    }
+    res.json(conversation)
+    
   } catch (err) {
     handleHTTPError(res, "SAVE_FEEDBACK_ERROR");
   }

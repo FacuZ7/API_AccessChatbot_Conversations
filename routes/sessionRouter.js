@@ -1,7 +1,7 @@
 import express from "express";
 import {
   getAllSessions,
-  getSessionById,
+  getSessionByChatId,
   createSession,
   updateSession,
   updateActivity,
@@ -253,7 +253,7 @@ const router = express.Router();
  */
 
 router.get("/", getAllSessions);
-router.get("/:id", getSessionById);
+router.get("/:id", getSessionByChatId);
 router.post("/", createSession);
 router.patch("/updateSession/:id", updateSession);
 router.patch("/updateActivity/:id", updateActivity);

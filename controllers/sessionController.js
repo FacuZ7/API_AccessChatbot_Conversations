@@ -12,12 +12,13 @@ const getAllSessions = async (req, res) => {
   }
 };
 
-const getSessionById = async (req, res) => {
+const getSessionByChatId = async (req, res) => {
   //GET /session/:id
+  
   try {
-    const { id } = req.params;
-    const data = await SessionModel.findOne({ chatId: id });
-    res.send(data);
+    const id = req.params.id
+    const data = await SessionModel.findOne({ chat_id: id });
+    res.send(data)
   } catch (error) {
     handleHTTPError(res, "GET_SESSION_BY_ID_ERROR", 404);
   }
@@ -55,7 +56,6 @@ const updateSession = async (req, res) => {
       const updatedSession = await session.save()
         
       res.json(updatedSession)
-    res.send({ data });
   } catch (error) {
     handleHTTPError(res, "UPDATE_ITEM_ERROR");
   }
@@ -77,16 +77,16 @@ const updateActivity = async (req, res) => {
   } catch (err) {
     res.json({
       message: err.message,
-    });
+    })
   }
-};
+}
 
 const erraseAllSessions = async (req, res) => {}; //implementar
 const erraseSession = async (req, res) => {}; //implementar
 
 export {
   getAllSessions,
-  getSessionById,
+  getSessionByChatId,
   createSession,
   updateSession,
   updateActivity,
