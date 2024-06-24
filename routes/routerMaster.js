@@ -9,7 +9,7 @@ const routerMaster = Router()
 
 routerMaster.use('/conversations', conversationsRoutes);
 routerMaster.use('/vectors', vectorRouter);
-routerMaster.use('/session', sessionRoutes);
+routerMaster.use('/sessions', sessionRoutes);
 routerMaster.use('/clients', clientRouter);
 
 routerMaster.use('/', (req, res)=>{

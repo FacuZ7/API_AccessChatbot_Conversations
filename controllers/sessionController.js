@@ -1,5 +1,7 @@
 import { SessionModel } from "../models/schemaIndex.js";
 import handleHTTPError from "../utils/handleError.js";
+import getCurrentTime from "../utils/time.js";
+import generateRandomID from '../utils/randomId.js'
 
 const getAllSessions = async (req, res) => {
   try {
@@ -12,14 +14,10 @@ const getAllSessions = async (req, res) => {
 
 const getSessionById = async (req, res) => {
   //GET /session/:id
-  const { id } = req.params;
-  // console.log(id, req.params.id)
-
   try {
     const { id } = req.params;
-    // const data = await SessionModel.findById(id);
-    const data = await SessionModel.find({ chatId: id });
-    res.send({ data });
+    const data = await SessionModel.findOne({ chatId: id });
+    res.send(data);
   } catch (error) {
     handleHTTPError(res, "GET_SESSION_BY_ID_ERROR", 404);
   }
@@ -28,9 +26,16 @@ const getSessionById = async (req, res) => {
 const createSession = async (req, res) => {
   //POST /session
   try {
-    const { body } = req;
-    const data = await SessionModel.create(body);
-    res.send({ data });
+    const {chat_id} = req.body
+
+    const session = new SessionModel({
+      chat_id,
+      last_active: getCurrentTime(),
+      session_id: generateRandomID()
+  })
+    
+    const data = await session.save()
+    res.json(data)
   } catch (error) {
     handleHTTPError(res, "CREATE_SESSION_ERROR");
   }
@@ -38,20 +43,18 @@ const createSession = async (req, res) => {
 
 const updateSession = async (req, res) => {
   //PATCH /session/:id
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    const { body } = req;
-    const data = await SessionModel.findByIdAndUpdate(
-      id,
-      body,
-      { new: true },
-      function (err, doc) {
-        if (err) {
-          handleHTTPError(res, "UPDATE_ITEM_ERROR", 304);
-        }
-        // else{    res.send({doc})    }
+    const session = await SessionModel.findOne({ chat_id: id })
+
+      if(session !== null){
+          session.session_id = generateRandomID()
+          session.last_active = getCurrentTime()
       }
-    );
+ 
+      const updatedSession = await session.save()
+        
+      res.json(updatedSession)
     res.send({ data });
   } catch (error) {
     handleHTTPError(res, "UPDATE_ITEM_ERROR");
@@ -59,10 +62,10 @@ const updateSession = async (req, res) => {
 };
 
 const updateActivity = async (req, res) => {
-  const chatId = req.params.id;
+  const chat_id = req.params.id;
 
   try {
-    const session = await Session.findOne({ chat_id: chatId });
+    const session = await SessionModel.findOne({ chat_id });
 
     if (session !== null) {
       session.last_active = getCurrentTime();
