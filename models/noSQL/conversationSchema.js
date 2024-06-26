@@ -26,22 +26,26 @@ ConversationSchema.pre("save", function (next) {
   // La conversación también se guarda al actualizar feedback de mensajes antigüos
   // Podría haber un save de una conversación cerrada que dispara este trigger
   // Por eso consulta por el estado antes de hacer la operación
-
   if (document.status === "open") {
     setTimeout(() => {
-      const MAX_MINUTES = 30;
-      const lastMessage = document.messages[document.messages.length - 1];
+      try {
+        const MAX_MINUTES = 30;
+        const lastMessage = document.messages[document.messages.length - 1];
 
-      let last = parseInt(lastMessage.date);
-      let current = Date.now();
+        let last = parseInt(lastMessage.date);
+        let current = Date.now();
 
-      const diff = Math.abs(current - last);
-      const minutes = diff / (1000 * 60);
+        const diff = Math.abs(current - last);
+        const minutes = diff / (1000 * 60);
 
-      if (minutes > MAX_MINUTES) {
-        document.status = "closed";
-        document.save();
+        if (minutes > MAX_MINUTES) {
+          document.status = "closed";
+          document.save();
+        }
+      } catch (error) {
+        console.log("TRIGGER_ERROR: ", error)
       }
+      
     }, 1800000);
   }
 
