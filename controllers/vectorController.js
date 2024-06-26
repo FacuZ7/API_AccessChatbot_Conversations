@@ -5,12 +5,21 @@ const getVector = async (req, res) => {
     try {
       const { filename } = req.query;
       const data = await VectorModel.find({ filename });
-      res.send({data});
+      res.json(data);
     } catch (error) {
       handleHTTPError(res, error);
     }
 }; 
 
+const getVectorById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await VectorModel.findById(id);
+    res.json(data);
+  } catch (error) {
+    handleHTTPError(res, error);
+  }
+}; 
 
 const createVector = async (req, res) => {
     console.log(req.body)
@@ -31,4 +40,4 @@ const createVector = async (req, res) => {
     }
 };
 
-export { getVector, createVector };
+export { getVector, createVector, getVectorById };
